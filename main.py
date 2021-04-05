@@ -1,3 +1,4 @@
+import sys, subprocess
 import requests
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -41,20 +42,20 @@ def writeSheet(nombre, url, tipo, i,indexPag):
     if url[len(url)-1] !='/':
         url =url+'/'
     info = apis(url,strategy)
-    conexionDoc(indexPag, 'A', i, nombre)
-    conexionDoc(indexPag, 'B', i, url)
-    conexionDoc(indexPag, 'C', i, str(date.today()))
-    conexionDoc(indexPag, 'D', i, tipo)
-    conexionDoc(indexPag, 'E', i, info['first-contentful-paint']['displayValue'])
-    conexionDoc(indexPag, 'F', i, info['speed-index']['displayValue'])
-    conexionDoc(indexPag, 'G', i, info['interactive']['displayValue'])
-    conexionDoc(indexPag, 'H', i, info['first-meaningful-paint']['displayValue'])
-    conexionDoc(indexPag, 'I', i, info['first-cpu-idle']['displayValue'])
-    conexionDoc(indexPag, 'J', i, info['estimated-input-latency']['displayValue'])
+    if info != None:        
+      conexionDoc(indexPag, 'A', i, nombre)
+      conexionDoc(indexPag, 'B', i, url)
+      conexionDoc(indexPag, 'C', i, str(date.today()))
+      conexionDoc(indexPag, 'D', i, tipo)
+      conexionDoc(indexPag, 'E', i, info['first-contentful-paint']['displayValue'])
+      conexionDoc(indexPag, 'F', i, info['speed-index']['displayValue'])
+      conexionDoc(indexPag, 'G', i, info['interactive']['displayValue'])
+      conexionDoc(indexPag, 'H', i, info['first-meaningful-paint']['displayValue'])
+      conexionDoc(indexPag, 'I', i, info['first-cpu-idle']['displayValue'])
+      conexionDoc(indexPag, 'J', i, info['estimated-input-latency']['displayValue'])
 
 def apis(url,type):
     x = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://'+url+type+'&key=AIzaSyAwMEAQbR1OM6aoHpGiT0W42K2hlDnRJ5c' 
-    print(x)
     f= requests.get(x)
     s=f.json()
     if 'lighthouseResult' in s:
@@ -63,7 +64,7 @@ def apis(url,type):
 def conexionDoc(indexPag, col, row, data):
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
     # add credentials to the account
-    creds = ServiceAccountCredentials.from_json_keyfile_name('BellaDurmiente-bc8549c7c1c7.json', scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name('/home/ubuntu/apps/belladurmiente/BellaDurmiente-bc8549c7c1c7.json', scope)
     # authorize the clientsheet 
     client = gspread.authorize(creds)
     # get the instance of the Spreadsheet
@@ -75,7 +76,7 @@ def conexionDoc(indexPag, col, row, data):
 def index(page):
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
     # add credentials to the account
-    creds = ServiceAccountCredentials.from_json_keyfile_name('BellaDurmiente-bc8549c7c1c7.json', scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name('/home/ubuntu/apps/belladurmiente/BellaDurmiente-bc8549c7c1c7.json', scope)
     # authorize the clientsheet 
     client = gspread.authorize(creds)
     # get the instance of the Spreadsheet
