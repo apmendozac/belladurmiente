@@ -1,3 +1,4 @@
+import sys, subprocess
 import requests
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -13,7 +14,6 @@ config.read('config.ini')
 def main():
     urls = requests.get("https://filesstaticpulzo.s3-us-west-2.amazonaws.com/pulzo-lite/jsons/admin/bd_report_webvitals.json")
     urls = urls.json()
-    i=2
     if 'pruebas' in urls:
         for tipo in urls['pruebas']:
             if tipo['nombre'] == "home":
@@ -42,45 +42,39 @@ def writeSheet(nombre, url, tipo, i,indexPag):
         strategy ='&strategy=mobile'
     else :
         strategy = ''
-    if url[len(url)-1] !='/':
-        url =url+'/'
     info = apis(url,strategy)
-    conexionDoc(indexPag, 'A', i, nombre)
-    conexionDoc(indexPag, 'B', i, url)
-    conexionDoc(indexPag, 'C', i, str(date.today()))
-    conexionDoc(indexPag, 'D', i, tipo)
-    conexionDoc(indexPag, 'E', i, info['first-contentful-paint']['displayValue'])
-    conexionDoc(indexPag, 'F', i, info['speed-index']['displayValue'])
-    conexionDoc(indexPag, 'G', i, info['interactive']['displayValue'])
-    conexionDoc(indexPag, 'H', i, info['first-meaningful-paint']['displayValue'])
-    conexionDoc(indexPag, 'I', i, info['first-cpu-idle']['displayValue'])
-    conexionDoc(indexPag, 'J', i, info['estimated-input-latency']['displayValue'])
+    fecha = date.today().strftime('%Y-%m-%d')
+    if info != None:        
+      data = [nombre,url,fecha,tipo, info['first-contentful-paint']['displayValue'].replace('.', ','),info['speed-index']['displayValue'].replace('.', ','),info['interactive']['displayValue'].replace('.', ','),info['first-meaningful-paint']['displayValue'].replace('.', ','),info['first-cpu-idle']['displayValue'].replace('.', ','),info['estimated-input-latency']['displayValue'].replace(',', '').replace('.', ',')]  
+      conexionDoc(indexPag, i, data)
+    
 
-def apis(url,type):
+def apis(url,tipo):
     key= config['DEFAULT']['KEY']
-    x = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://'+url+type+'&key='+key 
+    x = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://'+url+tipo+'&key='+key 
     print(x)
-    f= requests.get(x)
+    f= requests.get(x, timeout=(500,500))
     s=f.json()
     if 'lighthouseResult' in s:
         return s['lighthouseResult']['audits']
 
-def conexionDoc(indexPag, col, row, data):
+def conexionDoc(indexPag, row, data):
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
     # add credentials to the account
-    creds = ServiceAccountCredentials.from_json_keyfile_name('BellaDurmiente-bc8549c7c1c7.json', scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name('/home/ubuntu/apps/belladurmiente/BellaDurmiente-bc8549c7c1c7.json', scope)
     # authorize the clientsheet 
     client = gspread.authorize(creds)
     # get the instance of the Spreadsheet
     sheet = client.open('BaseDatosReportes')
     # get the first sheet of the Spreadsheet
     sheet_instance = sheet.get_worksheet(indexPag)
-    sheet_instance.update_acell(col+str(row),data)
+    sheet_instance.insert_row(data, row)
+    sheet_instance.update_acell('C'+str(row),data[2])
 
 def index(page):
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
     # add credentials to the account
-    creds = ServiceAccountCredentials.from_json_keyfile_name('BellaDurmiente-bc8549c7c1c7.json', scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name('/home/ubuntu/apps/belladurmiente/BellaDurmiente-bc8549c7c1c7.json', scope)
     # authorize the clientsheet 
     client = gspread.authorize(creds)
     # get the instance of the Spreadsheet
