@@ -4,6 +4,10 @@ from oauth2client.service_account import ServiceAccountCredentials
 from datetime import date
 from datetime import datetime
 import urllib3
+import configparser
+
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 
 def main():
@@ -53,7 +57,8 @@ def writeSheet(nombre, url, tipo, i,indexPag):
     conexionDoc(indexPag, 'J', i, info['estimated-input-latency']['displayValue'])
 
 def apis(url,type):
-    x = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://'+url+type+'&key=AIzaSyAwMEAQbR1OM6aoHpGiT0W42K2hlDnRJ5c' 
+    key= config['DEFAULT']['KEY']
+    x = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://'+url+type+'&key='+key 
     print(x)
     f= requests.get(x)
     s=f.json()
