@@ -45,7 +45,7 @@ def writeSheet(nombre, url, tipo, i,indexPag):
     info = apis(url,strategy)
     fecha = date.today().strftime('%Y-%m-%d')
     if info != None:        
-      data = [nombre,url,fecha,tipo, info['first-contentful-paint']['displayValue'].replace('.', ','),info['speed-index']['displayValue'].replace('.', ','),info['interactive']['displayValue'].replace('.', ','),info['first-meaningful-paint']['displayValue'].replace('.', ','),info['first-cpu-idle']['displayValue'].replace('.', ','),info['estimated-input-latency']['displayValue'].replace(',', '').replace('.', ',')]  
+      data = [nombre,url,fecha,tipo, info['first-contentful-paint']['displayValue'].replace('.', ',').replace('s', ''),info['speed-index']['displayValue'].replace('.', ',').replace('s', ''),info['interactive']['displayValue'].replace('.', ',').replace('s', ''),info['first-meaningful-paint']['displayValue'].replace('.', ',').replace('s', ''),info['first-cpu-idle']['displayValue'].replace('.', ',').replace('s', ''),info['estimated-input-latency']['displayValue'].replace(',', '').replace('.', ',').replace('ms', '')]  
       conexionDoc(indexPag, i, data)
     
 
