@@ -44,8 +44,8 @@ def writeSheet(nombre, url, tipo, i,indexPag):
         strategy = ''
     info = apis(url,strategy)
     fecha = date.today().strftime('%Y-%m-%d')
-    if info != None:        
-      data = [nombre,url,fecha,tipo, info['first-contentful-paint']['displayValue'].replace('s', ''),info['speed-index']['displayValue'].replace('s', ''),info['interactive']['displayValue'].replace('s', ''),info['first-meaningful-paint']['displayValue'].replace('s', ''),info['first-cpu-idle']['displayValue'].replace('s', ''),info['estimated-input-latency']['displayValue'].replace(',', '').replace('ms', '')]  
+    if info != None:  
+      data = [nombre,url,fecha,tipo, float(info['first-contentful-paint']['displayValue'].replace('s', '').strip()),float(info['speed-index']['displayValue'].replace('s', '').strip()), float(info['interactive']['displayValue'].replace('s', '').strip()), float(info['first-meaningful-paint']['displayValue'].replace('s', '').strip()), float(info['total-blocking-time']['displayValue'].replace(',', '').replace('ms', '').strip())]  
       conexionDoc(indexPag, i, data)
     
 
@@ -65,7 +65,7 @@ def conexionDoc(indexPag, row, data):
     # authorize the clientsheet 
     client = gspread.authorize(creds)
     # get the instance of the Spreadsheet
-    sheet = client.open('BaseDatosReportes')
+    sheet = client.open('webvitals')
     # get the first sheet of the Spreadsheet
     sheet_instance = sheet.get_worksheet(indexPag)
     sheet_instance.insert_row(data, row)
@@ -78,7 +78,7 @@ def index(page):
     # authorize the clientsheet 
     client = gspread.authorize(creds)
     # get the instance of the Spreadsheet
-    sheet = client.open('BaseDatosReportes')
+    sheet = client.open('webvitals')
     # get the first sheet of the Spreadsheet
     sheet_instance = sheet.get_worksheet(page)
     values_list = sheet_instance.col_values(1)
