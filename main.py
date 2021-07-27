@@ -44,8 +44,10 @@ def writeSheet(nombre, url, tipo, i,indexPag):
         strategy = ''
     info = apis(url,strategy)
     fecha = date.today().strftime('%Y-%m-%d')
-    if info != None:        
-      data = [nombre,url,fecha,tipo, info['first-contentful-paint']['displayValue'].replace('.', ',').replace('s', ''),info['speed-index']['displayValue'].replace('.', ',').replace('s', ''),info['interactive']['displayValue'].replace('.', ',').replace('s', ''),info['first-meaningful-paint']['displayValue'].replace('.', ',').replace('s', ''),info['first-cpu-idle']['displayValue'].replace('.', ',').replace('s', ''),info['estimated-input-latency']['displayValue'].replace(',', '').replace('.', ',').replace('ms', '')]  
+    if info != None:  
+      ss = info['first-contentful-paint']['displayValue'].replace('s', '').strip()   
+      print(ss+"zzzss")     
+      data = [nombre,url,fecha,tipo, float(info['first-contentful-paint']['displayValue'].replace('s', '').strip()),float(info['speed-index']['displayValue'].replace('s', '').strip()), float(info['interactive']['displayValue'].replace('s', '').strip()), float(info['first-meaningful-paint']['displayValue'].replace('s', '').strip()), float(info['total-blocking-time']['displayValue'].replace(',', '').replace('ms', '').strip())]  
       conexionDoc(indexPag, i, data)
     
 
@@ -61,11 +63,11 @@ def apis(url,tipo):
 def conexionDoc(indexPag, row, data):
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
     # add credentials to the account
-    creds = ServiceAccountCredentials.from_json_keyfile_name('/home/ubuntu/apps/belladurmiente/BellaDurmiente-bc8549c7c1c7.json', scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name('BellaDurmiente-bc8549c7c1c7.json', scope)
     # authorize the clientsheet 
     client = gspread.authorize(creds)
     # get the instance of the Spreadsheet
-    sheet = client.open('BaseDatosReportes')
+    sheet = client.open('webvitals')
     # get the first sheet of the Spreadsheet
     sheet_instance = sheet.get_worksheet(indexPag)
     sheet_instance.insert_row(data, row)
@@ -74,11 +76,11 @@ def conexionDoc(indexPag, row, data):
 def index(page):
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
     # add credentials to the account
-    creds = ServiceAccountCredentials.from_json_keyfile_name('/home/ubuntu/apps/belladurmiente/BellaDurmiente-bc8549c7c1c7.json', scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name('BellaDurmiente-bc8549c7c1c7.json', scope)
     # authorize the clientsheet 
     client = gspread.authorize(creds)
     # get the instance of the Spreadsheet
-    sheet = client.open('BaseDatosReportes')
+    sheet = client.open('webvitals')
     # get the first sheet of the Spreadsheet
     sheet_instance = sheet.get_worksheet(page)
     values_list = sheet_instance.col_values(1)
