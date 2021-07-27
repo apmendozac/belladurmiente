@@ -8,7 +8,7 @@ import urllib3
 import configparser
 
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read('/home/ubuntu/apps/belladurmiente/config.ini')
 
 
 def main():
@@ -45,7 +45,7 @@ def writeSheet(nombre, url, tipo, i,indexPag):
     info = apis(url,strategy)
     fecha = date.today().strftime('%Y-%m-%d')
     if info != None:        
-      data = [nombre,url,fecha,tipo, info['first-contentful-paint']['displayValue'].replace('.', ',').replace('s', ''),info['speed-index']['displayValue'].replace('.', ',').replace('s', ''),info['interactive']['displayValue'].replace('.', ',').replace('s', ''),info['first-meaningful-paint']['displayValue'].replace('.', ',').replace('s', ''),info['first-cpu-idle']['displayValue'].replace('.', ',').replace('s', ''),info['estimated-input-latency']['displayValue'].replace(',', '').replace('.', ',').replace('ms', '')]  
+      data = [nombre,url,fecha,tipo, info['first-contentful-paint']['displayValue'].replace('s', ''),info['speed-index']['displayValue'].replace('s', ''),info['interactive']['displayValue'].replace('s', ''),info['first-meaningful-paint']['displayValue'].replace('s', ''),info['first-cpu-idle']['displayValue'].replace('s', ''),info['estimated-input-latency']['displayValue'].replace(',', '').replace('ms', '')]  
       conexionDoc(indexPag, i, data)
     
 
