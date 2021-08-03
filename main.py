@@ -42,10 +42,12 @@ def writeSheet(nombre, url, tipo, i,indexPag):
         strategy ='&strategy=mobile'
     else :
         strategy = ''
-    info = apis(url,strategy)
+    datas = apis(url,strategy)
+    performance = datas[1]
+    info = datas[0]
     fecha = date.today().strftime('%Y-%m-%d')
-    if info != None:  
-      data = [nombre,url,fecha,tipo, float(info['first-contentful-paint']['displayValue'].replace('s', '').strip()),float(info['speed-index']['displayValue'].replace('s', '').strip()), float(info['interactive']['displayValue'].replace('s', '').strip()), float(info['first-meaningful-paint']['displayValue'].replace('s', '').strip()), float(info['total-blocking-time']['displayValue'].replace(',', '').replace('ms', '').strip())]  
+    if info != None:      
+      data = [nombre,url,fecha,tipo, float(info['first-contentful-paint']['displayValue'].replace('s', '').strip()),float(info['speed-index']['displayValue'].replace('s', '').strip()), float(info['interactive']['displayValue'].replace('s', '').strip()), float(info['first-meaningful-paint']['displayValue'].replace('s', '').strip()), float(info['total-blocking-time']['displayValue'].replace(',', '').replace('ms', '').strip()), float(info['cumulative-layout-shift']['displayValue'].replace(',', '').strip()), float(info['largest-contentful-paint']['displayValue'].replace(',', '').replace('s', '').strip()), float(info['max-potential-fid']['displayValue'].replace(',', '').replace('ms', '').strip()), (performance*100)]  
       conexionDoc(indexPag, i, data)
     
 
@@ -56,7 +58,7 @@ def apis(url,tipo):
     f= requests.get(x, timeout=(500,500))
     s=f.json()
     if 'lighthouseResult' in s:
-        return s['lighthouseResult']['audits']
+        return s['lighthouseResult']['audits'], s['lighthouseResult']['categories']['performance']['score']
 
 def conexionDoc(indexPag, row, data):
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
