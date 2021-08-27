@@ -9,7 +9,7 @@ import configparser
 
 config = configparser.ConfigParser()
 config.read('/home/ubuntu/apps/belladurmiente/config.ini')
-
+global urlpage
 
 def main():
     urls = requests.get("https://filesstaticpulzo.s3-us-west-2.amazonaws.com/pulzo-lite/jsons/admin/bd_report_webvitals.json")
@@ -67,7 +67,7 @@ def conexionDoc(indexPag, row, data):
     # authorize the clientsheet 
     client = gspread.authorize(creds)
     # get the instance of the Spreadsheet
-    sheet = client.open('webvitals')
+    sheet = client.open(urlpage)
     # get the first sheet of the Spreadsheet
     sheet_instance = sheet.get_worksheet(indexPag)
     sheet_instance.insert_row(data, row)
@@ -80,10 +80,16 @@ def index(page):
     # authorize the clientsheet 
     client = gspread.authorize(creds)
     # get the instance of the Spreadsheet
-    sheet = client.open('webvitals')
+    sheet = client.open(urlpage)
     # get the first sheet of the Spreadsheet
     sheet_instance = sheet.get_worksheet(page)
     values_list = sheet_instance.col_values(1)
     return(len(values_list)+1)
 
-main()
+
+
+if len(sys.argv) == 2:
+    urlpage = sys.argv[1]
+    main()
+else:
+    print("Error - Introduce los argumentos correctamente")
