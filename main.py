@@ -47,7 +47,7 @@ def writeSheet(nombre, url, tipo, i,indexPag):
     info = datas[0]
     fecha = date.today().strftime('%Y-%m-%d')
     if info != None:      
-      data = [nombre,url,fecha,tipo, float(info['first-contentful-paint']['displayValue'].replace('s', '').strip()),float(info['speed-index']['displayValue'].replace('s', '').strip()), float(info['interactive']['displayValue'].replace('s', '').strip()), float(info['first-meaningful-paint']['displayValue'].replace('s', '').strip()), float(info['total-blocking-time']['displayValue'].replace(',', '').replace('ms', '').strip()), float(info['cumulative-layout-shift']['displayValue'].replace(',', '').strip()), float(info['largest-contentful-paint']['displayValue'].replace(',', '').replace('s', '').strip()), float(info['max-potential-fid']['displayValue'].replace(',', '').replace('ms', '').strip()), (performance*100)]  
+      data = [nombre,url,fecha,tipo, (performance*100), float(info['first-contentful-paint']['displayValue'].replace('s', '').strip()),float(info['speed-index']['displayValue'].replace('s', '').strip()), float(info['largest-contentful-paint']['displayValue'].replace(',', '').replace('s', '').strip()), float(info['interactive']['displayValue'].replace('s', '').strip()), float(info['total-blocking-time']['displayValue'].replace(',', '').replace('ms', '').strip()), float(info['cumulative-layout-shift']['displayValue'].replace(',', '').strip()), float(info['max-potential-fid']['displayValue'].replace(',', '').replace('ms', '').strip()), float(info['first-meaningful-paint']['displayValue'].replace('s', '').strip())]  
       conexionDoc(indexPag, i, data)
     
 
